@@ -70,12 +70,9 @@ public class AdresseProcessor implements ItemProcessor<AdresseDto, AdresseEntity
         entity.setCad_parcelles(tx.cad_parcelles());
 
 
-
         if (adresseRepository.existsById(entity.getId())) {
             adresseDoublonsWriter.writeDuplicate(entity);
         }
-
-
 
 
 

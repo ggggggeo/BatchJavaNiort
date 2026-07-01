@@ -6,6 +6,7 @@ import com.example.projetadresse2emeessai.batch.AdresseSkipListener;
 import com.example.projetadresse2emeessai.batch.JobProgressListener;
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
+import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntityPourTableBrut;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 import org.springframework.transaction.PlatformTransactionManager;
+import com.example.projetadresse2emeessai.batch.AdresseBrutProcessor;
 
 import java.util.List;
 
@@ -46,29 +48,48 @@ public class AdresseBatchConfig {
     private final PlatformTransactionManager txManager;
 
     @Bean
-    public Job AdresseDtoImportJob(Step validateAndImportStep,
+    public Job AdresseDtoImportJob(Step importBrutStep,
+                                   Step validateAndImportStep,
                                     Step reportStep,
                                     JobProgressListener listener) {
         return new JobBuilder("AdresseDtoImportJob", jobRepository)
                 .listener(listener)
-                .start(validateAndImportStep)
+                .start(importBrutStep)
+                .next(validateAndImportStep)
                 .next(reportStep)
                 .build();
     }
+
+    @Bean
+    public Step importBrutStep(
+            FlatFileItemReader<AdresseDto> reader,
+            AdresseBrutProcessor adresseBrutProcessor,
+            JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter) {
+
+        return new StepBuilder("importBrutStep", jobRepository)
+                .<AdresseDto, AdresseSansFiltrageEntityPourTableBrut>chunk(1000)
+                .transactionManager(txManager)
+                .reader(reader)
+                .processor(adresseBrutProcessor)
+                .writer(jpaBrutWriter)
+                .build();
+    }
+
+
 
 
     @Bean
     public Step validateAndImportStep(
             FlatFileItemReader<AdresseDto> reader,
             CompositeItemProcessor<AdresseDto, AdresseEntity> processor,
-            JpaItemWriter<AdresseEntity> writer,
+            JpaItemWriter<AdresseEntity> jpaWriter,
             AdresseSkipListener skipListener) {
         return new StepBuilder("validateAndImportStep", jobRepository)
                 .<AdresseDto, AdresseEntity>chunk(1000)
                 .transactionManager(txManager)
                 .reader(reader)
                 .processor(processor)
-                .writer(writer)
+                .writer(jpaWriter)
                 .faultTolerant()
                 .skipLimit(100)
                 .skip(Exception.class)
@@ -204,7 +225,10 @@ public class AdresseBatchConfig {
 
 
 
-
+    @Bean
+    public JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter(EntityManagerFactory emf) {
+        return new JpaItemWriter<>(emf);
+    }
 
 
 
