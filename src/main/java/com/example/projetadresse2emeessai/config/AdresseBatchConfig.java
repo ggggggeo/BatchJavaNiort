@@ -86,7 +86,8 @@ public class AdresseBatchConfig {
                             .getStepExecution().getJobExecution().getExecutionContext();
                     long total   = ctx.getLong("nombreDeLignesLues",   0L);
                     long nbLigneEcriteParWriter   = ctx.getLong("nombreDeLignesEcrites",   0L);
-
+                    long nbLigneInsereeEnBase = ctx.getLong("nombreLigneBaseApresImport",0L) -
+                            ctx.getLong("nombreLigneBaseAvantImport",0L);
 
 
 
@@ -99,6 +100,7 @@ public class AdresseBatchConfig {
                     log.info("=== RAPPORT FINAL ===");
                     log.info("Total traité : {} ", total);
                     log.info("Nombre de ligne écrite par le writer : {} ", nbLigneEcriteParWriter);
+                    log.info("Nombre de ligne écrite dans la base : {} ", nbLigneInsereeEnBase);
                     log.info("Adresses invalides : {}", skipped);
                     log.info("Notification envoyée.");
 

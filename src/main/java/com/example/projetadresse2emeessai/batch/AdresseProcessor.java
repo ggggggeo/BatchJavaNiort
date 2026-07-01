@@ -4,6 +4,7 @@ package com.example.projetadresse2emeessai.batch;
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
 
+import com.example.projetadresse2emeessai.repository.AdresseRepository;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
@@ -14,10 +15,22 @@ import java.util.regex.Pattern;
 public class AdresseProcessor implements ItemProcessor<AdresseDto, AdresseEntity> {
 
     private static final Pattern ID_PATTERN = Pattern.compile("^\\d{5}_.*");
+    private final AdresseRepository adresseRepository;
+    private final AdresseDoublonsWriter adresseDoublonsWriter;
+
+
+    public AdresseProcessor(AdresseRepository adresseRepository,
+                            AdresseDoublonsWriter adresseDoublonsWriter) {
+        this.adresseRepository = adresseRepository;
+        this.adresseDoublonsWriter = adresseDoublonsWriter;
+    }
+
+
 
 
     @Override
     public AdresseEntity process(AdresseDto tx) {
+
 
 
         if (tx.code_postal() == null
@@ -55,6 +68,16 @@ public class AdresseProcessor implements ItemProcessor<AdresseDto, AdresseEntity
         entity.setSource_nom_voie(tx.source_nom_voie());
         entity.setCertification_commune(tx.certification_commune());
         entity.setCad_parcelles(tx.cad_parcelles());
+
+
+
+        if (adresseRepository.existsById(entity.getId())) {
+            adresseDoublonsWriter.writeDuplicate(entity);
+        }
+
+
+
+
 
         return entity;
     }

@@ -1,3 +1,12 @@
+# resultat 
+
+```
+215162 = adresses valides envoyées au writer
+209102 = nouvelles lignes réellement ajoutées en base
+6060   = adresses écrites mais pas insérées comme nouvelles lignes
+```
+
+
 ## Swagger
 
 ```
@@ -23,7 +32,25 @@ Pour tracer les données, savoir combien de ligne ont été lues.
 On peut utiliser soit le contexte soit le métrique micrometer 
 ```
 
+# Step et Job 
 
+```` 
+step qui importe en base : validateAndImportStep
+beforeStep
+lecture CSV
+processor
+writer JPA
+afterStep
+
+
+Job : 
+
+beforeJob
+validateAndImportStep
+reportStep
+afterJob
+
+````
 
 
 # Partie 2
