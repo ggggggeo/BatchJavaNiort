@@ -1,5 +1,5 @@
 package com.example.projetadresse2emeessai.config;
-
+/*Patrick1*/
 
 import com.example.projetadresse2emeessai.batch.AdresseProcessor;
 import com.example.projetadresse2emeessai.batch.AdresseSkipListener;
@@ -85,6 +85,10 @@ public class AdresseBatchConfig {
                     ExecutionContext ctx = chunkContext.getStepContext()
                             .getStepExecution().getJobExecution().getExecutionContext();
                     long total   = ctx.getLong("nombreDeLignesLues",   0L);
+                    long nbLigneEcriteParWriter   = ctx.getLong("nombreDeLignesEcrites",   0L);
+
+
+
 
                     //stepExecution.getReadCount()
                     long skipped = chunkContext.getStepContext()
@@ -94,6 +98,7 @@ public class AdresseBatchConfig {
 
                     log.info("=== RAPPORT FINAL ===");
                     log.info("Total traité : {} ", total);
+                    log.info("Nombre de ligne écrite par le writer : {} ", nbLigneEcriteParWriter);
                     log.info("Adresses invalides : {}", skipped);
                     log.info("Notification envoyée.");
 

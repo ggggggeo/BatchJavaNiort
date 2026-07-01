@@ -35,10 +35,16 @@ public class AdresseSkipListener implements SkipListener<AdresseDto, AdresseEnti
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         long nombreDeLignesLues = stepExecution.getReadCount();
+        long nombreDeLignesEcrites = stepExecution.getWriteCount();
+
+
         stepExecution.getJobExecution()
                 .getExecutionContext()
                 .putLong("nombreDeLignesLues", nombreDeLignesLues);
 
+        stepExecution.getJobExecution()
+                .getExecutionContext()
+                .putLong("nombreDeLignesEcrites", nombreDeLignesEcrites);
 
 
         System.out.println("##Nombre de lignes lues : " + nombreDeLignesLues);

@@ -16,6 +16,16 @@ Un champ de recherche par code postal, un champ de recherche par rue et un champ
 L'appel renvoie la liste des adresses correspondantes.
 ```
 
+# Tracer les données
+
+```
+Pour tracer les données, savoir combien de ligne ont été lues.
+On peut utiliser soit le contexte soit le métrique micrometer 
+```
+
+
+
+
 # Partie 2
 
 ````
