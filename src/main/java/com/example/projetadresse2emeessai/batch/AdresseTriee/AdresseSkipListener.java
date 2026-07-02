@@ -2,6 +2,7 @@ package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
+import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntity;
 import com.example.projetadresse2emeessai.repository.AdresseRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -33,6 +34,23 @@ public class AdresseSkipListener implements SkipListener<AdresseDto, AdresseEnti
     @Override
     public void onSkipInProcess(AdresseDto item, Throwable t) {
         invalidTransactions.add(item);
+
+        AdresseSansFiltrageEntity = AdresseSansFiltrageEntity.builder()
+
+
+                .adresseId(item.id())
+                .code_postal(item.code_postal())
+                .code_insee(item.code_insee())
+                .nom_commune(item.nom_commune())
+                .nom_voie(item.nom_voie())
+                .numero(item.numero())
+                .motifRejet(t.getMessage())
+                .build();
+
+
+
+
+
     }
 
 

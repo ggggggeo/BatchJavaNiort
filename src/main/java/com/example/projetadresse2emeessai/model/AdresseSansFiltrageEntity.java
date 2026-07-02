@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdresseSansFiltrageEntityPourTableBrut {
+public class AdresseSansFiltrageEntity {
 
     @Id
     @Column(name = "id_technique")

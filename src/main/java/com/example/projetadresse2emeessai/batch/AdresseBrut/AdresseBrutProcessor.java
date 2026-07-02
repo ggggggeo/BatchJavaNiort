@@ -1,16 +1,16 @@
 package com.example.projetadresse2emeessai.batch.AdresseBrut;
 
 import com.example.projetadresse2emeessai.dto.AdresseDto;
-import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntityPourTableBrut;
+import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntity;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AdresseBrutProcessor implements ItemProcessor<AdresseDto, AdresseSansFiltrageEntityPourTableBrut> {
+public class AdresseBrutProcessor implements ItemProcessor<AdresseDto, AdresseSansFiltrageEntity> {
 
     @Override
-    public AdresseSansFiltrageEntityPourTableBrut process(AdresseDto tx) {
-        return AdresseSansFiltrageEntityPourTableBrut.builder()
+    public AdresseSansFiltrageEntity process(AdresseDto tx) {
+        return AdresseSansFiltrageEntity.builder()
                 .adresseId(tx.id())
                 .id_fantoir(tx.id_fantoir())
                 .numero(tx.numero())

@@ -3,7 +3,7 @@ package com.example.projetadresse2emeessai.config;
 
 import com.example.projetadresse2emeessai.batch.AdresseBrut.AdresseBrutProcessor;
 import com.example.projetadresse2emeessai.dto.AdresseDto;
-import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntityPourTableBrut;
+import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntity;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;
@@ -30,10 +30,10 @@ public class AdresseBrutBatchConfig {
     public Step importBrutStep(
             FlatFileItemReader<AdresseDto> reader,
             AdresseBrutProcessor adresseBrutProcessor,
-            JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter) {
+            JpaItemWriter<AdresseSansFiltrageEntity> jpaBrutWriter) {
 
         return new StepBuilder("importBrutStep", jobRepository)
-                .<AdresseDto, AdresseSansFiltrageEntityPourTableBrut>chunk(1000)
+                .<AdresseDto, AdresseSansFiltrageEntity>chunk(1000)
                 .transactionManager(txManager)
                 .reader(reader)
                 .processor(adresseBrutProcessor)
@@ -42,7 +42,7 @@ public class AdresseBrutBatchConfig {
     }
 
     @Bean
-    public JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter(EntityManagerFactory emf) {
+    public JpaItemWriter<AdresseSansFiltrageEntity> jpaBrutWriter(EntityManagerFactory emf) {
         return new JpaItemWriter<>(emf);
     }
 
