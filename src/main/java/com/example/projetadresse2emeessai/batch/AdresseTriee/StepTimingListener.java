@@ -1,4 +1,4 @@
-package com.example.projetadresse2emeessai.batch;
+package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 
 import org.slf4j.Logger;

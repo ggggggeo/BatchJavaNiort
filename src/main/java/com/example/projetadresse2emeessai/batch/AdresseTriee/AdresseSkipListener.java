@@ -1,9 +1,8 @@
-package com.example.projetadresse2emeessai.batch;
+package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
 import com.example.projetadresse2emeessai.repository.AdresseRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.listener.SkipListener;
@@ -12,8 +11,6 @@ import org.springframework.batch.core.step.StepExecution;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,14 +1,11 @@
-package com.example.projetadresse2emeessai.batch;
+package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListener;
-import org.springframework.batch.core.listener.StepExecutionListener;
-import org.springframework.batch.core.step.StepExecution;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

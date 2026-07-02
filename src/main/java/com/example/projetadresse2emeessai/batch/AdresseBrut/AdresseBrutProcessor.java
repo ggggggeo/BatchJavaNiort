@@ -1,4 +1,4 @@
-package com.example.projetadresse2emeessai.batch;
+package com.example.projetadresse2emeessai.batch.AdresseBrut;
 
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntityPourTableBrut;

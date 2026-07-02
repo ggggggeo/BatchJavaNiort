@@ -1,4 +1,4 @@
-package com.example.projetadresse2emeessai.batch;
+package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 
 import com.example.projetadresse2emeessai.model.AdresseDoublonEntity;
@@ -6,11 +6,7 @@ import com.example.projetadresse2emeessai.model.AdresseEntity;
 import com.example.projetadresse2emeessai.repository.AdresseDoublonRepository;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.listener.StepExecutionListener;
-import org.springframework.batch.core.step.StepExecution;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component
 @StepScope

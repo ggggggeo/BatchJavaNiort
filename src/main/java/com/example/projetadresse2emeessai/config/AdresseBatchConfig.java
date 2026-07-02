@@ -1,12 +1,11 @@
 package com.example.projetadresse2emeessai.config;
 /*Patrick1*/
 
-import com.example.projetadresse2emeessai.batch.AdresseProcessor;
-import com.example.projetadresse2emeessai.batch.AdresseSkipListener;
-import com.example.projetadresse2emeessai.batch.JobProgressListener;
+import com.example.projetadresse2emeessai.batch.AdresseTriee.AdresseProcessor;
+import com.example.projetadresse2emeessai.batch.AdresseTriee.AdresseSkipListener;
+import com.example.projetadresse2emeessai.batch.AdresseTriee.JobProgressListener;
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
-import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntityPourTableBrut;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -32,8 +31,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
-import com.example.projetadresse2emeessai.batch.AdresseBrutProcessor;
 
 import java.util.List;
 
@@ -48,33 +47,52 @@ public class AdresseBatchConfig {
     private final PlatformTransactionManager txManager;
 
     @Bean
-    public Job AdresseDtoImportJob(Step importBrutStep,
-                                   Step validateAndImportStep,
-                                    Step reportStep,
-                                    JobProgressListener listener) {
+    public Job AdresseDtoImportJob(
+            Step cleanBrutTableStep,
+            Step cleanAdresseTableStep,
+            Step cleanDoublonsAdresseTableStep,
+            Step importBrutStep,
+            Step validateAndImportStep,
+            Step reportStep,
+            JobProgressListener listener) {
         return new JobBuilder("AdresseDtoImportJob", jobRepository)
                 .listener(listener)
-                .start(importBrutStep)
+                .start(cleanBrutTableStep)
+                .next(cleanAdresseTableStep)
+                .next(cleanDoublonsAdresseTableStep)
+                .next(importBrutStep)
                 .next(validateAndImportStep)
                 .next(reportStep)
                 .build();
     }
 
-    @Bean
-    public Step importBrutStep(
-            FlatFileItemReader<AdresseDto> reader,
-            AdresseBrutProcessor adresseBrutProcessor,
-            JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter) {
 
-        return new StepBuilder("importBrutStep", jobRepository)
-                .<AdresseDto, AdresseSansFiltrageEntityPourTableBrut>chunk(1000)
-                .transactionManager(txManager)
-                .reader(reader)
-                .processor(adresseBrutProcessor)
-                .writer(jpaBrutWriter)
+
+
+    @Bean
+    public Step cleanAdresseTableStep(JdbcTemplate jdbcTemplate) {
+        return new StepBuilder("cleanAdresseTableStep", jobRepository)
+                .tasklet((contribution, chunkContext) -> {
+
+                    jdbcTemplate.execute("DELETE FROM adresse_table");
+                    jdbcTemplate.execute("DELETE FROM sqlite_sequence WHERE name = 'adresse_table'");
+                    return RepeatStatus.FINISHED;
+                }, txManager)
                 .build();
     }
 
+
+    @Bean
+    public Step cleanDoublonsAdresseTableStep(JdbcTemplate jdbcTemplate) {
+        return new StepBuilder("cleanDoublonsAdresseTableStep", jobRepository)
+                .tasklet((contribution, chunkContext) -> {
+                    jdbcTemplate.execute("DELETE FROM adresse_doublons");
+                    jdbcTemplate.execute("DELETE FROM sqlite_sequence WHERE name = 'adresse_doublons'");
+
+                    return RepeatStatus.FINISHED;
+                }, txManager)
+                .build();
+    }
 
 
 
@@ -225,10 +243,7 @@ public class AdresseBatchConfig {
 
 
 
-    @Bean
-    public JpaItemWriter<AdresseSansFiltrageEntityPourTableBrut> jpaBrutWriter(EntityManagerFactory emf) {
-        return new JpaItemWriter<>(emf);
-    }
+
 
 
 

@@ -5,6 +5,20 @@
 209102 = nouvelles lignes réellement ajoutées en base
 6060   = adresses écrites mais pas insérées comme nouvelles lignes
 ```
+# En Cours
+````
+
+Prochain etape, faire deux job 
+LE premier : 
+
+.start(cleanBrutTableStep)
+.next(importBrutStep)
+.next(validateAndImportStep)
+.next(reportStep)
+
+Le deuxième qui utilise la table brut, trie les données
+pour trier les doublons et voir les erreurs.
+````
 
 
 ## Swagger
