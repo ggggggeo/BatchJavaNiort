@@ -2,8 +2,11 @@ package com.example.projetadresse2emeessai.batch.AdresseTriee;
 
 import com.example.projetadresse2emeessai.dto.AdresseDto;
 import com.example.projetadresse2emeessai.model.AdresseEntity;
-import com.example.projetadresse2emeessai.model.AdresseSansFiltrageEntity;
+import com.example.projetadresse2emeessai.model.AdresseReject;
+
+import com.example.projetadresse2emeessai.repository.AdresseRejetRepository;
 import com.example.projetadresse2emeessai.repository.AdresseRepository;
+
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.listener.SkipListener;
@@ -22,34 +25,31 @@ public class AdresseSkipListener implements SkipListener<AdresseDto, AdresseEnti
     private final List<AdresseDto> invalidTransactions = new ArrayList<>();
     private final String errorFile;
     private final AdresseRepository adresseRepository;
+    private final AdresseRejetRepository adresseRejetRepository;
 
     public AdresseSkipListener(
             @Value("#{jobParameters['errorFile']}") String errorFile,
-            AdresseRepository adresseRepository
+            AdresseRepository adresseRepository,
+            AdresseRejetRepository adresseRejetRepository
             ) {
         this.errorFile = errorFile;
         this.adresseRepository = adresseRepository;
+        this.adresseRejetRepository = adresseRejetRepository;
     }
 
     @Override
     public void onSkipInProcess(AdresseDto item, Throwable t) {
         invalidTransactions.add(item);
 
-        AdresseSansFiltrageEntity = AdresseSansFiltrageEntity.builder()
-
-
+        AdresseReject adresseReject = AdresseReject.builder()
                 .adresseId(item.id())
                 .code_postal(item.code_postal())
                 .code_insee(item.code_insee())
                 .nom_commune(item.nom_commune())
-                .nom_voie(item.nom_voie())
-                .numero(item.numero())
                 .motifRejet(t.getMessage())
                 .build();
 
-
-
-
+        adresseRejetRepository.save(adresseReject);
 
     }
 
